@@ -16,38 +16,40 @@ public class Main extends Application {
   Player player;
   FileChooser fileChooser;
 
-  public void start(final Stage primaryStage) {
-    MenuItem open = new MenuItem("Open");
-    Menu file = new Menu("File");
-    MenuBar menu = new MenuBar();
+  @Override
+  public void start(Stage stage) {
+    MenuItem menuItemOpen = new MenuItem("Open");
+    Menu menuFile = new Menu("File");
+    MenuBar menuBar = new MenuBar();
 
-    file.getItems().add(open);
-    menu.getMenus().add(file);
+    menuFile.getItems().add(menuItemOpen);
+    menuBar.getMenus().add(menuFile);
 
     fileChooser = new FileChooser();
-    open.setOnAction(
+    menuItemOpen.setOnAction(
         e -> {
           player.mediaPlayer.pause();
-          File file1 = fileChooser.showOpenDialog(primaryStage);
-
-          if (file1 != null) {
-            try {
-              player = new Player(file1.toURI().toURL().toExternalForm());
-              Scene scene = new Scene(player, 720, 535, Color.BLACK);
-              primaryStage.setScene(scene);
-            } catch (MalformedURLException e1) {
-              e1.printStackTrace();
-            }
+          File newFile = fileChooser.showOpenDialog(stage);
+          if (newFile == null) {
+            return;
+          }
+          try {
+            player = new Player(newFile.toURI().toURL().toExternalForm());
+            Scene scene = new Scene(player, 720, 535, Color.BLACK);
+            stage.setScene(scene);
+          } catch (MalformedURLException e1) {
+            e1.printStackTrace();
           }
         });
 
     player = new Player("file:///Users/ihor/Desktop/test.mp4");
 
-    player.setTop(menu);
+    player.setTop(menuBar);
 
-    Scene scene = new Scene(player, 720, 405, Color.BLACK);
+     Scene scene = new Scene(player, 720, 405);
+//    Scene scene = new Scene(player);
 
-    primaryStage.setScene(scene);
-    primaryStage.show();
+    stage.setScene(scene);
+    stage.show();
   }
 }
