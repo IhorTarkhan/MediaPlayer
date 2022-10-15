@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -14,42 +13,38 @@ import java.net.MalformedURLException;
 
 public class Main extends Application {
   Player player;
-  FileChooser fileChooser;
+  String initialFile = "file:///Users/ihor/Desktop/BigBuckBunny.mp4";
 
   @Override
   public void start(Stage stage) {
     MenuItem menuItemOpen = new MenuItem("Open");
-    Menu menuFile = new Menu("File");
-    MenuBar menuBar = new MenuBar();
+    MenuBar menuBar = new MenuBar(new Menu("File", null, menuItemOpen));
 
-    menuFile.getItems().add(menuItemOpen);
-    menuBar.getMenus().add(menuFile);
-
-    fileChooser = new FileChooser();
     menuItemOpen.setOnAction(
         e -> {
           player.mediaPlayer.pause();
-          File newFile = fileChooser.showOpenDialog(stage);
+          File newFile = new FileChooser().showOpenDialog(stage);
           if (newFile == null) {
             return;
           }
           try {
             player = new Player(newFile.toURI().toURL().toExternalForm());
-            Scene scene = new Scene(player, 720, 535, Color.BLACK);
+            Scene scene = new Scene(player, 720, 405);
             stage.setScene(scene);
           } catch (MalformedURLException e1) {
             e1.printStackTrace();
           }
         });
 
-    player = new Player("file:///Users/ihor/Desktop/test.mp4");
-
+    player = new Player(initialFile);
     player.setTop(menuBar);
 
-     Scene scene = new Scene(player, 720, 405);
-//    Scene scene = new Scene(player);
+    Scene scene = new Scene(player, 720, 405);
 
     stage.setScene(scene);
     stage.show();
+
+    stage.widthProperty().addListener((obs, oldVal, newVal) -> System.out.println(newVal));
+    stage.heightProperty().addListener((obs, oldVal, newVal) -> System.out.println(newVal));
   }
 }
