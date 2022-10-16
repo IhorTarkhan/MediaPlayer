@@ -8,24 +8,24 @@ import javafx.scene.media.MediaPlayer;
 
 public class Volume extends HBox {
   public Volume(MediaPlayer mediaPlayer) {
-      setPadding(new Insets(10));
+    setPadding(new Insets(10));
 
-    Label volumeLabel = new Label("Volume: ");
-    Slider volumeSlider = new Slider();
+    Label label = new Label("Volume: ");
+    label.setMinWidth(50);
 
-    volumeSlider.setPrefWidth(70);
-    volumeSlider.setMinWidth(30);
-    volumeSlider.setValue(100);
+    Slider slider = new Slider();
+    slider.setMinWidth(70);
+    slider.setValue(100);
 
-    volumeSlider
+    slider
         .valueProperty()
         .addListener(
             x -> {
-              if (volumeSlider.isPressed()) {
-                mediaPlayer.setVolume(volumeSlider.getValue() / 100);
+              if (slider.isPressed()) {
+                mediaPlayer.setVolume(slider.getValue() / 100);
               }
             });
 
-    getChildren().addAll(volumeLabel, volumeSlider);
+    getChildren().addAll(label, slider);
   }
 }
