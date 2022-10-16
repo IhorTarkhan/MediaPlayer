@@ -6,7 +6,7 @@ import javafx.scene.media.MediaPlayer;
 public class PlayButton extends Button {
   public PlayButton(MediaPlayer mediaPlayer) {
     super("||");
-    setPrefWidth(30);
+    setMinWidth(30);
     setOnAction(
         e -> {
           MediaPlayer.Status status = mediaPlayer.getStatus();
