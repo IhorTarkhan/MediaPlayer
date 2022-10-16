@@ -13,7 +13,7 @@ public class Time extends HBox {
 
     setPadding(new Insets(10));
 
-    Label label = new Label("Time: ");
+    Label label = new Label();
     label.setMinWidth(80);
 
     Slider slider = new Slider();
@@ -42,7 +42,7 @@ public class Time extends HBox {
               if (slider.isPressed()) {
                 mediaPlayer.seek(
                     mediaPlayer.getMedia().getDuration().multiply(slider.getValue()).divide(100));
-                label.setText("");
+                label.setText(getTimeLabel(mediaPlayer));
               }
             });
     getChildren().addAll(label, slider);
