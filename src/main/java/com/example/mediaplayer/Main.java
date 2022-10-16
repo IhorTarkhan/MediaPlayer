@@ -16,51 +16,58 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 public class Main extends Application {
-  MediaPlayer mediaPlayer;
-  String initialFile = "file:///Users/ihor/Desktop/BigBuckBunny.mp4";
+  public static final double INITIAL_WIDTH = 720;
+  public static final double INITIAL_HEIGHT = 405;
+  public static final String INITIAL_FILE = "file:///Users/ihor/Desktop/BigBuckBunny.mp4";
+  MediaView mediaView;
 
   @Override
   public void start(Stage stage) {
     MenuItem menuItemOpen = new MenuItem("Open");
+    MenuBar topBar = new MenuBar(new Menu("File", null, menuItemOpen));
     menuItemOpen.setOnAction(
         x -> {
-          mediaPlayer.pause();
+          mediaView.getMediaPlayer().pause();
           File newFile = new FileChooser().showOpenDialog(stage);
           if (newFile == null) {
             return;
           }
           try {
             String location = newFile.toURI().toURL().toExternalForm();
-            extracted(stage, location);
+            BorderPane root = extracted(stage, location);
+            root.setTop(topBar);
           } catch (MalformedURLException e) {
             e.printStackTrace();
           }
         });
 
-    BorderPane player = extracted(stage, initialFile);
-    player.setTop(new MenuBar(new Menu("File", null, menuItemOpen)));
+    BorderPane root = extracted(stage, INITIAL_FILE);
+    root.setTop(topBar);
+
+    stage
+        .widthProperty()
+        .addListener((obs, oldVal, newVal) -> mediaView.setFitWidth(newVal.doubleValue()));
+    stage
+        .heightProperty()
+        .addListener((obs, oldVal, newVal) -> mediaView.setFitHeight(newVal.doubleValue() - 100));
 
     stage.show();
   }
 
   private BorderPane extracted(Stage stage, String location) {
-    BorderPane player = new BorderPane();
-    mediaPlayer = new MediaPlayer(new Media(location));
+    BorderPane root = new BorderPane();
+    MediaPlayer mediaPlayer = new MediaPlayer(new Media(location));
 
-    MediaView mediaView = new MediaView(mediaPlayer);
-    mediaView.setFitWidth(100);
-    mediaView.setFitHeight(100);
-    player.setCenter(mediaView);
-    player.setBottom(new BottomBar(mediaPlayer));
-    player.setStyle("-fx-background-color:#000000");
+    mediaView = new MediaView(mediaPlayer);
+    root.setCenter(mediaView);
+    root.setBottom(new BottomBar(mediaPlayer));
+    root.setStyle("-fx-background-color:#000000");
     mediaPlayer.play();
 
-    // player = new Player(location);
-    Scene scene = new Scene(player, 720, 405);
-    stage.setScene(scene);
+    stage.setScene(new Scene(root, INITIAL_WIDTH, INITIAL_HEIGHT + 70));
+    mediaView.setFitWidth(INITIAL_WIDTH);
+    mediaView.setFitHeight(INITIAL_HEIGHT);
 
-    stage.widthProperty().addListener((obs, oldVal, newVal) -> System.out.println(newVal));
-    stage.heightProperty().addListener((obs, oldVal, newVal) -> System.out.println(newVal));
-    return player;
+    return root;
   }
 }

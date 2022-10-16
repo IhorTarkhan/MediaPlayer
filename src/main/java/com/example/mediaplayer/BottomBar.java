@@ -15,6 +15,7 @@ public class BottomBar extends HBox {
     setPadding(new Insets(5, 10, 5, 10));
     getChildren()
         .addAll(new PlayButton(mediaPlayer), new TimeSlider(mediaPlayer), new Volume(mediaPlayer));
+    setStyle("-fx-background-color:#FFFFFF");
     HBox.setHgrow(getChildren().get(1), Priority.ALWAYS);
   }
 }
